@@ -36,19 +36,23 @@ body {
 }
 
 #music-btn {
-  margin-top: 2rem;
-  padding: 10px 20px;
-  background-color: rgb(253, 0, 0);
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background-color: rgba(255, 0, 0, 0.8);
   border: 1px solid white;
   color: white;
   border-radius: 25px;
   cursor: pointer;
   transition: background 0.3s;
+  z-index: 10;
 }
 
 #music-btn:hover {
-  background-color: rgb(231, 11, 11);
+  background-color: rgba(255, 50, 50, 1);
 }
+
 
 /* Snow canvas */
 #snow {
@@ -59,6 +63,30 @@ body {
   height: 100%;
   pointer-events: none;
   z-index: -1;
+}
+
+h1 {
+  color: white;
+  font-size: 3rem;
+  text-shadow: 0 0 20px #ff0000, 0 0 40px #ffcc00;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff6600; }
+  to   { text-shadow: 0 0 25px #fff, 0 0 45px #ff0000; }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  .day, .hour, .minute, .second {
+    font-size: 2rem;
+  }
+  .countdown {
+    gap: 1rem;
+  }
 }
 
 h2 {
@@ -73,25 +101,41 @@ h2 {
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    /* todo background image */
-    background-image: url(./images/snowy1.mp4);
-    background-size: 100%;
-    background-repeat: no-repeat;
+    background: rgba(0, 0, 0, 0.35);
 }
 
 .countdown {
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-    margin-bottom: 40%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
 }
 
-.day,
-.hour,
-.minute,
-.second {
-    font-size: 3rem;
+.countdown div {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 1rem 2rem;
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
 }
+
+.day, .hour, .minute, .second {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 15px red, 0 0 30px gold;
+}
+
+.countdown p {
+  color: #fff;
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 
 .waiting {
     height: 50vh;
