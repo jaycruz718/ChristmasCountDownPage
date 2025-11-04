@@ -23,6 +23,138 @@ body {
   z-index: -2;
 }
 
+/* === FIXED & FESTIVE MUSIC PLAYER === */
+.music-player {
+  position: fixed;
+  bottom: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  padding: 1rem 1.4rem;
+  border-radius: 20px;
+  text-align: center;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.3s ease;
+  animation: glowCycle 5s infinite alternate;
+}
+
+@keyframes glowCycle {
+  0% { box-shadow: 0 0 10px #ff4d4d; }
+  50% { box-shadow: 0 0 20px #00ff99; }
+  100% { box-shadow: 0 0 15px #ffffff; }
+}
+
+/* Beat-reactive pulsing glow */
+.music-player.beat {
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+              0 0 50px rgba(255, 50, 50, 0.5),
+              0 0 80px rgba(0, 255, 0, 0.4);
+  transform: translateX(-50%) scale(1.02);
+}
+
+/* === TRACK TITLE & VINYL === */
+#track-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  text-shadow: 0 0 6px rgba(255,255,255,0.7);
+}
+
+.vinyl {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.4);
+  background: radial-gradient(circle at 30% 30%, #222 0%, #000 80%);
+  box-shadow: 0 0 8px rgba(255,255,255,0.4);
+  animation: spinVinyl 5s linear infinite paused;
+  position: relative;
+}
+
+.vinyl::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.vinyl.playing {
+  animation-play-state: running;
+  box-shadow: 0 0 15px rgba(255,255,255,0.7),
+              0 0 25px rgba(255, 0, 0, 0.6);
+}
+
+@keyframes spinVinyl {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* === EQUALIZER === */
+.equalizer {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 35px;
+  gap: 4px;
+  margin-bottom: 0.8rem;
+}
+
+.equalizer .bar {
+  width: 7px;
+  height: 10px;
+  background: linear-gradient(180deg, #ffffff, #00ffcc);
+  border-radius: 3px;
+  transition: height 0.1s ease;
+  box-shadow: 0 0 8px #00ffcc;
+}
+
+/* === CONTROLS === */
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.6rem;
+}
+
+.control-btn {
+  font-size: 1.3rem;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #ff4d4d, #ffcc00);
+  box-shadow: 0 0 15px rgba(255,255,255,0.3);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.control-btn:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 25px rgba(255,255,255,0.6);
+}
+
+/* Beat-reactive buttons */
+.control-btn.beat {
+  box-shadow: 0 0 25px rgba(255,255,255,0.9),
+              0 0 35px rgba(255,0,0,0.6);
+  transform: scale(1.1);
+}
+
+
 /* Overlay */
 .overlay {
   position: relative;
@@ -35,23 +167,29 @@ body {
   background: rgba(0, 0, 0, 0.4);
 }
 
-#music-btn {
+/* ✨ Glowing background gradient */
+#bg-glow {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 12px 24px;
-  background-color: rgba(255, 0, 0, 0.8);
-  border: 1px solid white;
-  color: white;
-  border-radius: 25px;
-  cursor: pointer;
-  transition: background 0.3s;
-  z-index: 10;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.25), rgba(0, 255, 0, 0.15), rgba(255, 255, 255, 0.05));
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: glowShift 10s infinite alternate ease-in-out;
 }
 
-#music-btn:hover {
-  background-color: rgba(255, 50, 50, 1);
+/* 🌈 Slow hue shift for lights */
+@keyframes glowShift {
+  0% { background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.25), rgba(0, 255, 0, 0.15), rgba(255, 255, 255, 0.05)); }
+  25% { background: radial-gradient(circle at 60% 40%, rgba(255, 255, 0, 0.25), rgba(255, 0, 0, 0.2), rgba(0, 255, 0, 0.1)); }
+  50% { background: radial-gradient(circle at 40% 60%, rgba(0, 255, 0, 0.25), rgba(255, 255, 255, 0.2), rgba(255, 0, 0, 0.1)); }
+  75% { background: radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.25), rgba(255, 255, 0, 0.2), rgba(0, 255, 0, 0.1)); }
+  100% { background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.25), rgba(0, 255, 0, 0.15), rgba(255, 255, 255, 0.05)); }
 }
+
 
 
 /* Snow canvas */
@@ -62,8 +200,9 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 2;
 }
+
 
 h1 {
   color: white;
@@ -108,36 +247,203 @@ h2 {
   display: flex;
   justify-content: center;
   gap: 2rem;
-  margin-top: 2rem;
+  margin-top: 3rem;
   flex-wrap: wrap;
 }
 
 .countdown div {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  padding: 1rem 2rem;
-  color: white;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  border: 2px solid rgba(255,255,255,0.3);
+  animation: ornamentGlow 3s infinite ease-in-out alternate;
 }
 
+.countdown div:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+}
+
+/* Countdown numbers */
 .day, .hour, .minute, .second {
-  font-size: 3rem;
+  font-size: 2.8rem;
   font-weight: bold;
   color: #fff;
-  text-shadow: 0 0 15px red, 0 0 30px gold;
+  text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 35px rgba(255,255,255,0.4);
 }
 
-.countdown p {
+/* Labels under numbers */
+.countdown h3:last-child {
+  font-size: 1rem;
   color: #fff;
-  font-size: 1.2rem;
-  margin-top: 0.5rem;
+  opacity: 0.9;
+  margin-top: 0.3rem;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
+/* ✨ Base glow animation */
+@keyframes ornamentGlow {
+  0% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+  50% { box-shadow: 0 0 35px rgba(255,255,255,0.8); }
+  100% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+}
+
+/* 🎨 Individual ornament colors */
+.container-day {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 0, 0, 0.6), rgba(120, 0, 0, 0.5));
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+}
+
+.container-hour {
+  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 0, 0.6), rgba(0, 100, 0, 0.5));
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+}
+
+.container-minute {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.6), rgba(150, 120, 0, 0.5));
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+
+.container-second {
+  background: radial-gradient(circle at 30% 30%, rgba(180, 220, 255, 0.7), rgba(100, 150, 255, 0.5));
+  box-shadow: 0 0 25px rgba(150, 200, 255, 0.7);
+}
+
+/* 🎁 Small screen adjustments */
+@media (max-width: 768px) {
+  .countdown div {
+    width: 90px;
+    height: 90px;
+  }
+
+  .day, .hour, .minute, .second {
+    font-size: 2rem;
+  }
+
+  .countdown h3:last-child {
+    font-size: 0.8rem;
+  }
+}
 
 .waiting {
     height: 50vh;
 }
+
+/* 🪄 Ornament Strings + Hooks */
+.ornament {
+  position: relative;
+  margin-top: 3rem;
+}
+
+/* The string above each ornament */
+.ornament .string {
+  position: absolute;
+  top: -80px;         /* length above ornament */
+  left: 50%;
+  width: 2px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+  z-index: 1;
+}
+
+/* 🪞 Metallic Ornament Hooks */
+.ornament .hook {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 28px;
+  height: 18px;
+  border-radius: 0 0 18px 18px;
+  transform: translateX(-50%);
+  z-index: 2;
+
+  /* Chrome-style metallic gradient */
+  background: linear-gradient(
+    90deg,
+    rgba(230,230,230,0.9) 0%,
+    rgba(160,160,160,0.9) 30%,
+    rgba(255,255,255,1) 50%,
+    rgba(160,160,160,0.9) 70%,
+    rgba(230,230,230,0.9) 100%
+  );
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 
+    inset 0 0 4px rgba(255,255,255,0.8),
+    0 0 10px rgba(255,255,255,0.4);
+}
+
+/* 🎅 Custom Hook Colors per Ornament */
+.container-day .hook {
+  background: linear-gradient(90deg, #ffd6d6, #ff9999, #ffffff, #ff6666, #ffd6d6);
+  box-shadow: 0 0 8px rgba(255,0,0,0.6);
+}
+
+.container-hour .hook {
+  background: linear-gradient(90deg, #ccffcc, #66ff66, #ffffff, #33cc33, #ccffcc);
+  box-shadow: 0 0 8px rgba(0,255,0,0.5);
+}
+
+.container-minute .hook {
+  background: linear-gradient(90deg, #fff6c1, #ffcc33, #ffffff, #ffcc00, #fff6c1);
+  box-shadow: 0 0 8px rgba(255,215,0,0.6);
+}
+
+.container-second .hook {
+  background: linear-gradient(90deg, #d6e6ff, #99ccff, #ffffff, #80bfff, #d6e6ff);
+  box-shadow: 0 0 8px rgba(150,200,255,0.6);
+}
+
+/* 🎠 Gentle swinging animation for ornaments */
+@keyframes swing {
+  0% { transform: rotate(1deg); }
+  50% { transform: rotate(-1.5deg); }
+  100% { transform: rotate(1deg); }
+}
+
+/* Apply the swing animation to each ornament */
+.container-day, 
+.container-hour, 
+.container-minute, 
+.container-second {
+  transform-origin: top center;
+  animation: swing 3s ease-in-out infinite alternate;
+}
+
+/* Slight stagger so they swing at different times */
+.container-hour { animation-delay: 0.5s; }
+.container-minute { animation-delay: 1s; }
+.container-second { animation-delay: 1.5s; }
+
+
+/* 🎄 Glowing "Merry Christmas" text */
+#merry-text {
+  color: #fff;
+  text-align: center;
+  font-size: 3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-shadow: 0 0 20px #ff0000;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  #merry-text {
+    font-size: 2rem;
+  }
+}
+
+
 

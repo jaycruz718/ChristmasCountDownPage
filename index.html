@@ -6,44 +6,83 @@
     <link rel="stylesheet" href="./styles.css">
     <title>Christmas Countdown2025</title>
 </head>
-<body>
-    <video autoplay muted loop id="bg-video">
-        <source src="/images/santa1.mp4" type="video/mp4" />
-    </video>
+    <body>
+        <!-- 🎥 Background video -->
+        <video autoplay muted loop id="bg-video">
+            <source src="/images/santa1.mp4" type="video/mp4" />
+        </video>
 
-        <!-- Music controls -->
-        <audio id="bg-music" src="assets/music.mp3" loop></audio>
-        <button id="music-btn">🔊 Play Music</button>
+  <!-- 🎇 Soft glowing background layer -->
+    <div id="bg-glow"></div>
 
-    <!-- Snow container -->
+  <!-- ❄️ Snow canvas -->
         <canvas id="snow"></canvas>
+
+  <!-- 🌟 Flashy Music Player -->
+<section class="music-player" id="music-player">
+  <audio id="bg-music" preload="auto"></audio>
+
+    <div class="player-ui">
+      <div id="track-title">
+        <div class="vinyl" id="vinyl"></div>
+        <span id="track-text">Now Playing:</span>
     </div>
 
-    <section class="coming-soon">
-        <div>
-            <h1>Christmas 2025 Countdown</h1>
-            <div class="countdown">
-                <div class"container-day">
-                    <h3 class="day">Time</h3>
-                    <h3>Day</h3>
-                </div>
-                <div class"container-hour">
-                    <h3 class="hour">Time</h3>
-                    <h3>Hour</h3>
-                </div>
-                <div class"container-minute">
-                    <h3 class="minute">Time</h3>
-                    <h3>Minute</h3>
-                </div>
-                <div class"container-second">
-                    <h3 class="second">Time</h3>
-                    <h3>Second</h3>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div id="music-equalizer" class="equalizer">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
 
-    
-    <script src="./index.js"></script>
-</body>
+    <div class="controls">
+      <button id="prev-btn" class="control-btn">⏮️</button>
+      <button id="music-btn" class="control-btn">▶️</button>
+      <button id="next-btn" class="control-btn">⏭️</button>
+    </div>
+  </div>
+</section>
+
+
+  <!-- 🎄 Countdown section -->
+    <section class="coming-soon">
+      <div class="content">
+        <h1 id="merry-text">Christmas 2025 Countdown</h1>
+        <div class="countdown">
+            <div class="container-day ornament">
+                <div class="string"></div>
+                <div class="hook"></div>
+                <h3 class="day">00</h3>
+                <h3>Day</h3>
+            </div>
+            <div class="container-hour ornament">
+                <div class="string"></div>
+                <div class="hook"></div>
+                <h3 class="hour">00</h3>
+                <h3>Hour</h3>
+             </div>
+            <div class="container-minute ornament">
+                <div class="string"></div>
+                <div class="hook"></div>
+                <h3 class="minute">00</h3>
+                <h3>Minute</h3>
+            </div>
+            <div class="container-second ornament">
+                <div class="string"></div>
+                <div class="hook"></div>
+                <h3 class="second">00</h3>
+                <h3>Second</h3>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+        <script src="./index.js"></script>
+    </body>
+
 </html>
