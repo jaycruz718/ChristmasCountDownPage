@@ -20,12 +20,35 @@ function countdown() {
 
   if (remainingTime < 0) {
     merryText.innerText = "🎁 Merry Christmas! 🎄";
-    document.querySelector(".countdown").style.display = "none";
+    merryText.style.fontSize = "4rem";
+    merryText.style.textShadow = "0 0 40px #fff, 0 0 80px #ff0000";
+    merryText.style.transition = "all 1s ease";
+
+    // 🪞 Melt reflections
+    document.querySelectorAll('.reflection').forEach(r => {
+      r.style.transition = "transform 3s ease-in, opacity 3s ease-in";
+      r.style.transform = "translateX(-50%) scaleY(0.1)";
+      r.style.opacity = "0";
+    });
+
+    // Fade out ornaments smoothly
+    document.querySelectorAll('.countdown div').forEach(o => {
+      o.style.transition = "opacity 3s ease";
+      o.style.opacity = "0";
+    });
+
+    // ✨ Sparkle Finale
+    showSparkleFinale();
+
+    setTimeout(() => {
+      document.querySelector(".countdown").style.display = "none";
+    }, 3500);
   }
 }
-setInterval(countdown, 500);
-countdown();
 
+// Run countdown
+countdown();
+setInterval(countdown, 500);
 
 // ❄️ SNOW SETUP
 const canvas = document.getElementById("snow");
@@ -39,7 +62,7 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-for (let i = 0; i < 150; i++) {
+for (let i = 0; i < 100; i++) {
   flakes.push({
     x: Math.random() * canvas.width,
     y: Math.random() * canvas.height,
@@ -50,18 +73,24 @@ for (let i = 0; i < 150; i++) {
 }
 
 let angle = 0;
-function moveSnow(speedFactor) {
-  angle += 0.01;
+function moveSnow(speedFactor, avgAmplitude = 0) {
+  angle += 0.01 + avgAmplitude / 8000;
+
   for (const f of flakes) {
-    f.y += (Math.cos(angle + f.d) + 1 + f.r / 2) * speedFactor;
-    f.x += Math.sin(angle) * 1.5;
+    let fallSpeed = (Math.cos(angle + f.d) + 1 + f.r / 2) * speedFactor * (1.2 - f.r / 6);
+    const swayIntensity = (5 - f.r) / 2;
+    const beatSwing = Math.sin(angle * 2 + f.d * 10) * (avgAmplitude / (70 / swayIntensity));
+    f.x += Math.sin(angle) * 1.2 + beatSwing;
+    if (avgAmplitude > 140 && f.r > 3) {
+      fallSpeed -= avgAmplitude / (50 + f.r * 4);
+    }
+    f.y += fallSpeed;
     if (f.y > canvas.height) {
       f.y = 0;
       f.x = Math.random() * canvas.width;
     }
   }
 }
-
 
 // 🌈 BACKGROUND GLOW SYNC
 const bgGlow = document.getElementById("bg-glow");
@@ -71,8 +100,34 @@ function updateGlow(avg) {
   bgGlow.style.opacity = glowOpacity;
 }
 
+// 🎄 ORNAMENT PULSE + REFLECTIONS
+function updateOrnaments(avg) {
+  const ornaments = document.querySelectorAll('.countdown div');
+  ornaments.forEach((el, i) => {
+    const scale = 1 + (avg / 700) * (0.5 + i * 0.1);
+    el.style.transform = `scale(${Math.min(scale, 1.2)})`;
 
-// 🎵 MULTI-SONG MUSIC PLAYER + ANALYSER
+    const glowStrength = Math.min(1, 0.3 + avg / 250);
+    el.style.boxShadow = `0 0 ${15 + avg / 4}px rgba(255,255,255,${glowStrength})`;
+
+    const hueShift = (avg / 2 + i * 45) % 360;
+    el.style.filter = `hue-rotate(${hueShift}deg) brightness(${1 + avg / 400})`;
+    el.style.transition = "transform 0.15s ease, box-shadow 0.2s ease, filter 0.3s ease";
+
+    let reflection = el.querySelector('.reflection');
+    if (!reflection) {
+      reflection = document.createElement('div');
+      reflection.classList.add('reflection');
+      el.appendChild(reflection);
+    }
+
+    reflection.style.opacity = Math.min(1, 0.25 + avg / 400);
+    reflection.style.filter = `hue-rotate(${hueShift}deg) brightness(${1 + avg / 350})`;
+    reflection.style.transform = `translateX(-50%) scaleY(-1) scaleX(${1 + avg / 800})`;
+  });
+}
+
+// 🎵 MUSIC PLAYER + ANALYSER
 const music = document.getElementById("bg-music");
 const playBtn = document.getElementById("music-btn");
 const nextBtn = document.getElementById("next-btn");
@@ -92,6 +147,7 @@ const playlist = [
 let currentTrack = 0;
 let isPlaying = false;
 let audioContext, analyser, dataArray;
+let lastUpdate = 0;
 
 function setTrack(index) {
   if (index < 0) index = playlist.length - 1;
@@ -99,17 +155,17 @@ function setTrack(index) {
   currentTrack = index;
   music.src = playlist[currentTrack].src;
   trackTitle.textContent = `Now playing: ${playlist[currentTrack].title}`;
-
-  // 💫 Trigger fade animation every time song changes
   trackTitle.style.animation = 'none';
-  void trackTitle.offsetWidth; // force reflow
+  void trackTitle.offsetWidth;
   trackTitle.style.animation = 'fadeInTrack 0.8s ease forwards';
+  vinyl.style.animation = 'none';
+  void vinyl.offsetWidth;
+  vinyl.style.animation = 'vinylGlow 1.2s ease';
 }
 
 setTrack(currentTrack);
 music.volume = 0.6;
 
-// Start after user click (browser autoplay policy)
 window.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", () => {
     setupAudioAnalyser();
@@ -133,11 +189,11 @@ function playTrack(index) {
 playBtn.addEventListener("click", () => {
   if (isPlaying) {
     music.pause();
-    playBtn.textContent = "▶️ Play";
+    playBtn.textContent = "▶️";
     vinyl.classList.remove("playing");
   } else {
     music.play();
-    playBtn.textContent = "⏸️ Pause";
+    playBtn.textContent = "⏸️";
     vinyl.classList.add("playing");
   }
   isPlaying = !isPlaying;
@@ -145,94 +201,79 @@ playBtn.addEventListener("click", () => {
 
 nextBtn.addEventListener("click", () => playTrack(currentTrack + 1));
 prevBtn.addEventListener("click", () => playTrack(currentTrack - 1));
-
 music.addEventListener("ended", () => {
   vinyl.classList.remove("playing");
   playTrack(currentTrack + 1);
 });
 
-
-// 🎧 AUDIO ANALYSER + EQUALIZER
+// 🎧 AUDIO ANALYSER
+// 🎧 AUDIO ANALYSER SETUP (optimized)
 function setupAudioAnalyser() {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const source = audioContext.createMediaElementSource(music);
     analyser = audioContext.createAnalyser();
-    analyser.fftSize = 128;
+    analyser.fftSize = 64; // lower size = lighter
     source.connect(analyser);
     analyser.connect(audioContext.destination);
-    const bufferLength = analyser.frequencyBinCount;
-    dataArray = new Uint8Array(bufferLength);
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
   }
 }
 
-function animateEqualizer() {
+// 🧠 Optimized Equalizer + Visual Sync
+let lastFrameTime = 0;
+function animateEqualizer(now = 0) {
   if (!analyser || !dataArray) return;
 
+  // Run this loop only every ~60ms
+  if (now - lastFrameTime < 60) {
+    requestAnimationFrame(animateEqualizer);
+    return;
+  }
+  lastFrameTime = now;
+
   analyser.getByteFrequencyData(dataArray);
-  const step = Math.floor(dataArray.length / bars.length);
+  const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
 
-  let avg = 0;
-  bars.forEach((bar, i) => {
-    const value = dataArray[i * step];
-    const height = Math.max(8, (value / 255) * 25);
-    bar.style.height = `${height}px`;
-    bar.style.opacity = 0.5 + height / 50;
-    avg += value; // ✅ accumulate properly
-  });
-
-  avg = avg / dataArray.length; // ✅ correct average
-
-  // 🎶 BEAT REACTIVE GLOW
+  // === Batch style changes (no layout thrash) ===
   const player = document.getElementById("music-player");
   const buttons = document.querySelectorAll(".control-btn");
+  const playerBeat = avg > 120;
 
-  if (avg > 120) {
-    player.classList.add("beat");
-    buttons.forEach(btn => btn.classList.add("beat"));
-  } else {
-    player.classList.remove("beat");
-    buttons.forEach(btn => btn.classList.remove("beat"));
-  }
+  // Cache height updates
+  const step = Math.floor(dataArray.length / bars.length);
+  const heights = Array.from({ length: bars.length }, (_, i) =>
+    Math.max(8, (dataArray[i * step] / 255) * 25)
+  );
 
-  // 🎅 Countdown glow sync
-  const countdownBox = document.querySelector(".coming-soon");
-  if (avg > 130) {
-    countdownBox.style.textShadow = "0 0 25px rgba(255,255,255,0.8)";
-    countdownBox.style.transform = "scale(1.02)";
-  } else {
-    countdownBox.style.textShadow = "0 0 10px rgba(255,255,255,0.3)";
-    countdownBox.style.transform = "scale(1)";
-  }
+  // Apply in one go
+  requestAnimationFrame(() => {
+    bars.forEach((bar, i) => {
+      bar.style.height = `${heights[i]}px`;
+      bar.style.opacity = 0.5 + heights[i] / 50;
+    });
+    player.classList.toggle("beat", playerBeat);
+    buttons.forEach(btn => btn.classList.toggle("beat", playerBeat));
+    updateGlow(avg);
+    updateOrnaments(avg);
+    drawSnow(avg);
+  });
 
   requestAnimationFrame(animateEqualizer);
 }
 
-
-// ❄️ DRAW EVERYTHING
+// ❄️ DRAW SNOW
 let colorCycle = 0;
-
-function drawSnow() {
+function drawSnow(avg = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  let avg = 0;
-  if (analyser && dataArray) {
-    analyser.getByteFrequencyData(dataArray);
-    avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
-  }
-
-  updateGlow(avg);
-
   const speedFactor = 1 + avg / 200;
   const brightness = Math.min(1, 0.4 + avg / 400);
 
-  // Color pulse red → green → white
   colorCycle += 0.02 + avg / 10000;
   const r = Math.floor((Math.sin(colorCycle) + 1) * 127.5);
   const g = Math.floor((Math.sin(colorCycle + 2) + 1) * 127.5);
   const b = Math.floor((Math.sin(colorCycle + 4) + 1) * 127.5);
 
-  // Draw flakes
   ctx.beginPath();
   for (const f of flakes) {
     ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${f.opacity * brightness})`;
@@ -241,14 +282,49 @@ function drawSnow() {
   }
   ctx.fill();
 
-  // Update glowing text color
   const textColor = `rgb(${r}, ${g}, ${b})`;
   const glow = `0 0 15px ${textColor}, 0 0 30px ${textColor}`;
   merryText.style.color = textColor;
   merryText.style.textShadow = glow;
-
-  moveSnow(speedFactor);
+  moveSnow(speedFactor, avg);
 }
 
-setInterval(drawSnow, 25);
+// 🎆 Sparkle Finale
+function showSparkleFinale() {
+  const sparkleCanvas = document.createElement('canvas');
+  sparkleCanvas.width = window.innerWidth;
+  sparkleCanvas.height = window.innerHeight;
+  sparkleCanvas.style.position = 'fixed';
+  sparkleCanvas.style.top = '0';
+  sparkleCanvas.style.left = '0';
+  sparkleCanvas.style.pointerEvents = 'none';
+  sparkleCanvas.style.zIndex = '10';
+  document.body.appendChild(sparkleCanvas);
 
+  const sctx = sparkleCanvas.getContext('2d');
+  const sparkles = [];
+  for (let i = 0; i < 80; i++) {
+    sparkles.push({
+      x: Math.random() * sparkleCanvas.width,
+      y: Math.random() * sparkleCanvas.height / 2,
+      size: Math.random() * 3 + 2,
+      alpha: 1,
+      speed: Math.random() * 1.5 + 0.5
+    });
+  }
+
+  function animateSparkles() {
+    sctx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+    sparkles.forEach(s => {
+      sctx.beginPath();
+      sctx.fillStyle = `rgba(255, ${200 + Math.random()*55}, ${100 + Math.random()*155}, ${s.alpha})`;
+      sctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      sctx.fill();
+      s.y += s.speed;
+      s.alpha -= 0.01;
+    });
+    if (sparkles.some(s => s.alpha > 0)) requestAnimationFrame(animateSparkles);
+    else sparkleCanvas.remove();
+  }
+  animateSparkles();
+}
