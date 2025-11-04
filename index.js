@@ -99,6 +99,11 @@ function setTrack(index) {
   currentTrack = index;
   music.src = playlist[currentTrack].src;
   trackTitle.textContent = `Now playing: ${playlist[currentTrack].title}`;
+
+  // 💫 Trigger fade animation every time song changes
+  trackTitle.style.animation = 'none';
+  void trackTitle.offsetWidth; // force reflow
+  trackTitle.style.animation = 'fadeInTrack 0.8s ease forwards';
 }
 
 setTrack(currentTrack);

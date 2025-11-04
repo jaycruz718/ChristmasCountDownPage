@@ -445,5 +445,30 @@ h2 {
   }
 }
 
+/* 🎶 Now Playing Fade Animation */
+@keyframes fadeInTrack {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(4px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#track-text {
+  display: inline-block;
+  opacity: 0;
+  animation: fadeInTrack 0.8s ease forwards;
+}
+
+
 
 
