@@ -19,8 +19,8 @@
         <canvas id="snow"></canvas>
 
   <!-- 🌟 Flashy Music Player -->
-<section class="music-player" id="music-player">
-  <audio id="bg-music" preload="auto"></audio>
+  <section class="music-player" id="music-player">
+    <audio id="bg-music" preload="auto"></audio>
 
     <div class="player-ui">
       <div id="track-title">
@@ -45,42 +45,71 @@
       <button id="next-btn" class="control-btn">⏭️</button>
     </div>
   </div>
-</section>
+  </section>
 
 
   <!-- 🎄 Countdown section -->
-    <section class="coming-soon">
-      <div class="content">
-        <h1 id="merry-text">Christmas 2025 Countdown</h1>
-        <div class="countdown">
-            <div class="container-day ornament">
-                <div class="string"></div>
-                <div class="hook"></div>
-                <h3 class="day">00</h3>
-                <h3>Day</h3>
-            </div>
-            <div class="container-hour ornament">
-                <div class="string"></div>
-                <div class="hook"></div>
-                <h3 class="hour">00</h3>
-                <h3>Hour</h3>
-             </div>
-            <div class="container-minute ornament">
-                <div class="string"></div>
-                <div class="hook"></div>
-                <h3 class="minute">00</h3>
-                <h3>Minute</h3>
-            </div>
-            <div class="container-second ornament">
-                <div class="string"></div>
-                <div class="hook"></div>
-                <h3 class="second">00</h3>
-                <h3>Second</h3>
-            </div>
+  <section class="coming-soon">
+  <div class="content">
+    <h1 id="merry-text">Christmas 2025 Countdown</h1>
 
-          </div>
+    <div class="countdown">
+
+      <!-- Day -->
+      <div class="ornament container-day">
+        <div class="string"></div>
+        <div class="hook"></div>
+
+        <div class="ball">
+          <h3 class="day">00</h3>
+          <p>Day</p>
         </div>
-      </section>
+
+        <div class="reflection"></div>
+      </div>
+
+      <!-- Hour -->
+      <div class="ornament container-hour">
+        <div class="string"></div>
+        <div class="hook"></div>
+
+        <div class="ball">
+          <h3 class="hour">00</h3>
+          <p>Hour</p>
+        </div>
+
+        <div class="reflection"></div>
+      </div>
+
+      <!-- Minute -->
+      <div class="ornament container-minute">
+        <div class="string"></div>
+        <div class="hook"></div>
+
+        <div class="ball">
+          <h3 class="minute">00</h3>
+          <p>Minute</p>
+        </div>
+
+        <div class="reflection"></div>
+      </div>
+
+      <!-- Second -->
+      <div class="ornament container-second">
+        <div class="string"></div>
+        <div class="hook"></div>
+
+        <div class="ball">
+          <h3 class="second">00</h3>
+          <p>Second</p>
+        </div>
+
+        <div class="reflection"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
         <script src="./index.js"></script>
     </body>

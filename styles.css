@@ -190,8 +190,6 @@ body {
   100% { background: radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.25), rgba(0, 255, 0, 0.15), rgba(255, 255, 255, 0.05)); }
 }
 
-
-
 /* Snow canvas */
 #snow {
   position: fixed;
@@ -243,291 +241,165 @@ h2 {
     background: rgba(0, 0, 0, 0.35);
 }
 
+/* 🎄 OPTION A - PREMIUM GLASS ORNAMENT COUNTDOWN */
+
 .countdown {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  gap: 3rem;
   margin-top: 3rem;
   flex-wrap: wrap;
 }
 
-.countdown div {
-  width: 130px;
-  height: 130px;
+/* Each ornament wrapper */
+.ornament {
+  position: relative;
+  width: 150px;
+  height: 220px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+  animation: sway 3.5s ease-in-out infinite;
+}
+
+/* Ornament sway motion */
+@keyframes sway {
+  0% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+  100% { transform: rotate(-3deg); }
+}
+
+/* String */
+.ornament .string {
+  width: 2px;
+  height: 85px;
+  background: rgba(255,255,255,0.7);
+  margin: 0 auto;
+  box-shadow: 0 0 6px rgba(255,255,255,0.3);
+}
+
+/* Hook */
+.ornament .hook {
+  width: 32px;
+  height: 24px;
+  margin-top: -5px;
+  border: 3px solid gold;
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  background: linear-gradient(90deg, #ffe8a0, #ffffff, #d4ac00);
+  box-shadow: 0 0 8px gold;
+}
+
+/* Ornament Ball */
+.ball {
+  width: 120px;
+  height: 120px;
+  margin-top: 12px;
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
-  color: #fff;
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(6px);
+  background: radial-gradient(circle at 30% 30%, white 5%, var(--base) 35%, var(--dark) 95%);
+  box-shadow:
+    0 0 25px var(--glow),
+    inset 0 0 15px rgba(255,255,255,0.3);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 2px solid rgba(255,255,255,0.3);
-  animation: ornamentGlow 3s infinite ease-in-out alternate;
+  color: white;
+  text-shadow: 0 0 6px rgba(0,0,0,0.6);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.countdown div:hover {
+/* Hover: brighter and larger */
+.ball:hover {
   transform: scale(1.08);
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 35px gold, inset 0 0 25px white;
 }
 
 /* Countdown numbers */
-.day, .hour, .minute, .second {
+.ball h3 {
   font-size: 2.8rem;
-  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  font-weight: 800;
   color: #fff;
-  text-shadow: 0 0 15px rgba(255,255,255,0.8), 0 0 35px rgba(255,255,255,0.4);
+  text-shadow:
+    0 0 4px rgba(0,0,0,0.8),
+    0 0 10px rgba(0,0,0,0.5); /* dark shadow makes digits pop */
 }
 
-/* Labels under numbers */
-.countdown h3:last-child {
+/* Countdown label */
+.ball p {
   font-size: 1rem;
-  color: #fff;
-  opacity: 0.9;
-  margin-top: 0.3rem;
-  text-transform: uppercase;
+  margin-top: 0.2rem;
   letter-spacing: 1px;
+  opacity: 0.95;
+  text-transform: uppercase;
 }
 
-/* ✨ Base glow animation */
-@keyframes ornamentGlow {
-  0% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
-  50% { box-shadow: 0 0 35px rgba(255,255,255,0.8); }
-  100% { box-shadow: 0 0 20px rgba(255,255,255,0.4); }
+/* Reflection (beneath ball) */
+/* 🪞 SOFT, SUBTLE ORNAMENT REFLECTION */
+.reflection {
+    position: absolute;
+    top: 165px;              /* lower so it doesn’t touch the ball */
+    left: 50%;
+    transform: translateX(-50%) scaleY(-1);
+    width: 80px;             /* smaller reflection */
+    height: 20px;            /* thinner */
+    background: radial-gradient(
+        circle,
+        rgba(255,255,255,0.12),
+        rgba(255,255,255,0)
+    );
+    filter: blur(4px);       /* softer blur */
+    opacity: 0.25;            /* VERY soft transparency */
+    pointer-events: none;
 }
 
-/* 🎨 Individual ornament colors */
+/* Ornament Colors */
+
+/* Red Day */
+/* Red Day */
 .container-day {
-  background: radial-gradient(circle at 30% 30%, rgba(255, 0, 0, 0.6), rgba(120, 0, 0, 0.5));
-  box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+  --base: #d63a3a;
+  --dark: #791313;
+  --glow: rgba(200,0,0,0.4);
 }
 
+/* Green Hour */
 .container-hour {
-  background: radial-gradient(circle at 30% 30%, rgba(0, 255, 0, 0.6), rgba(0, 100, 0, 0.5));
-  box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+  --base: #1bb81b;
+  --dark: #0a530a;
+  --glow: rgba(0,200,0,0.4);
 }
 
+/* Gold Minute */
 .container-minute {
-  background: radial-gradient(circle at 30% 30%, rgba(255, 215, 0, 0.6), rgba(150, 120, 0, 0.5));
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  --base: #e5c444;
+  --dark: #8a720f;
+  --glow: rgba(200,160,0,0.4);
 }
 
+/* Blue Second */
 .container-second {
-  background: radial-gradient(circle at 30% 30%, rgba(180, 220, 255, 0.7), rgba(100, 150, 255, 0.5));
-  box-shadow: 0 0 25px rgba(150, 200, 255, 0.7);
+  --base: #6cabd9;
+  --dark: #1d4c87;
+  --glow: rgba(120,160,220,0.4);
 }
 
-/* 🎁 Small screen adjustments */
+/* Small Screens */
 @media (max-width: 768px) {
-  .countdown div {
-    width: 90px;
-    height: 90px;
+  .ornament {
+    width: 120px;
   }
-
-  .day, .hour, .minute, .second {
-    font-size: 2rem;
+  .ball {
+    width: 95px;
+    height: 95px;
   }
-
-  .countdown h3:last-child {
+  .ball h3 {
+    font-size: 2.2rem;
+  }
+  .ball p {
     font-size: 0.8rem;
   }
 }
-
-.waiting {
-    height: 50vh;
-}
-
-/* 🪄 Ornament Strings + Hooks */
-.ornament {
-  position: relative;
-  margin-top: 3rem;
-}
-
-/* The string above each ornament */
-.ornament .string {
-  position: absolute;
-  top: -80px;         /* length above ornament */
-  left: 50%;
-  width: 2px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.4);
-  transform: translateX(-50%);
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
-  z-index: 1;
-}
-
-/* 🪞 Metallic Ornament Hooks */
-.ornament .hook {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  width: 28px;
-  height: 18px;
-  border-radius: 0 0 18px 18px;
-  transform: translateX(-50%);
-  z-index: 2;
-
-  /* Chrome-style metallic gradient */
-  background: linear-gradient(
-    90deg,
-    rgba(230,230,230,0.9) 0%,
-    rgba(160,160,160,0.9) 30%,
-    rgba(255,255,255,1) 50%,
-    rgba(160,160,160,0.9) 70%,
-    rgba(230,230,230,0.9) 100%
-  );
-  border: 1px solid rgba(255,255,255,0.5);
-  box-shadow: 
-    inset 0 0 4px rgba(255,255,255,0.8),
-    0 0 10px rgba(255,255,255,0.4);
-}
-
-/* 🎅 Custom Hook Colors per Ornament */
-.container-day .hook {
-  background: linear-gradient(90deg, #ffd6d6, #ff9999, #ffffff, #ff6666, #ffd6d6);
-  box-shadow: 0 0 8px rgba(255,0,0,0.6);
-}
-
-.container-hour .hook {
-  background: linear-gradient(90deg, #ccffcc, #66ff66, #ffffff, #33cc33, #ccffcc);
-  box-shadow: 0 0 8px rgba(0,255,0,0.5);
-}
-
-.container-minute .hook {
-  background: linear-gradient(90deg, #fff6c1, #ffcc33, #ffffff, #ffcc00, #fff6c1);
-  box-shadow: 0 0 8px rgba(255,215,0,0.6);
-}
-
-.container-second .hook {
-  background: linear-gradient(90deg, #d6e6ff, #99ccff, #ffffff, #80bfff, #d6e6ff);
-  box-shadow: 0 0 8px rgba(150,200,255,0.6);
-}
-
-/* 🎠 Gentle swinging animation for ornaments */
-@keyframes swing {
-  0% { transform: rotate(1deg); }
-  50% { transform: rotate(-1.5deg); }
-  100% { transform: rotate(1deg); }
-}
-
-/* Apply the swing animation to each ornament */
-.container-day, 
-.container-hour, 
-.container-minute, 
-.container-second {
-  transform-origin: top center;
-  animation: swing 3s ease-in-out infinite alternate;
-}
-
-/* Slight stagger so they swing at different times */
-.container-hour { animation-delay: 0.5s; }
-.container-minute { animation-delay: 1s; }
-.container-second { animation-delay: 1.5s; }
-
-
-/* 🎄 Glowing "Merry Christmas" text */
-#merry-text {
-  color: #fff;
-  text-align: center;
-  font-size: 3rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-  text-shadow: 0 0 20px #ff0000;
-  transition: color 0.3s ease, text-shadow 0.3s ease;
-}
-
-@media (max-width: 768px) {
-  #merry-text {
-    font-size: 2rem;
-  }
-}
-
-/* 🎶 Now Playing Fade Animation */
-@keyframes fadeInTrack {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-    filter: blur(4px);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-#track-text {
-  display: inline-block;
-  opacity: 0;
-  animation: fadeInTrack 0.8s ease forwards;
-}
-
-/* 💿 Vinyl Flash Animation */
-@keyframes vinylGlow {
-  0% {
-    box-shadow: 0 0 10px rgba(255,255,255,0.4),
-                0 0 20px rgba(255,0,0,0.4);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(255,255,255,0.9),
-                0 0 40px rgba(255,0,0,0.7);
-    transform: scale(1.1);
-  }
-  100% {
-    box-shadow: 0 0 10px rgba(255,255,255,0.4),
-                0 0 20px rgba(255,0,0,0.4);
-    transform: scale(1);
-  }
-}
-/* 🪞 Ornament Reflections */
-.reflection {
-  position: absolute;
-  bottom: -22px;
-  left: 50%;
-  width: 85%;
-  height: 22px;
-  transform: translateX(-50%) scaleY(-1);
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 255, 255, 0.45),
-    rgba(255, 255, 255, 0.15),
-    transparent 80%
-  );
-  opacity: 0.3;
-  pointer-events: none;
-  z-index: 0;
-  transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
-}
-
-/* 💡 Slight ripple on strong beats (optional extra) */
-@keyframes reflectionRipple {
-  0% {
-    transform: translateX(-50%) scaleY(-1) scaleX(1);
-    opacity: 0.35;
-  }
-  50% {
-    transform: translateX(-50%) scaleY(-1) scaleX(1.15);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateX(-50%) scaleY(-1) scaleX(1);
-    opacity: 0.35;
-  }
-}
-
-.reflection.ripple {
-  animation: reflectionRipple 0.6s ease;
-}
-
-
-
-

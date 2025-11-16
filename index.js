@@ -101,31 +101,34 @@ function updateGlow(avg) {
 }
 
 // 🎄 ORNAMENT PULSE + REFLECTIONS
+// 🎄 ORNAMENT PULSE + REFLECTIONS (lightweight)
 function updateOrnaments(avg) {
-  const ornaments = document.querySelectorAll('.countdown div');
-  ornaments.forEach((el, i) => {
-    const scale = 1 + (avg / 700) * (0.5 + i * 0.1);
-    el.style.transform = `scale(${Math.min(scale, 1.2)})`;
+  const ornaments = document.querySelectorAll('.ornament');
+  ornaments.forEach((ornament, i) => {
+    const ball = ornament.querySelector('.ball');
+    const reflection = ornament.querySelector('.reflection');
+    if (!ball || !reflection) return;
 
+    // Slight pulse based on music
+    const scale = 1 + (avg / 700) * (0.4 + i * 0.08);
+    ball.style.transform = `scale(${Math.min(scale, 1.15)})`;
+
+    // Soft glow
     const glowStrength = Math.min(1, 0.3 + avg / 250);
-    el.style.boxShadow = `0 0 ${15 + avg / 4}px rgba(255,255,255,${glowStrength})`;
+    ball.style.boxShadow = `
+      0 0 ${15 + avg / 4}px rgba(255,255,255,${glowStrength}),
+      inset 0 0 22px rgba(255,255,255,0.3)
+    `;
 
-    const hueShift = (avg / 2 + i * 45) % 360;
-    el.style.filter = `hue-rotate(${hueShift}deg) brightness(${1 + avg / 400})`;
-    el.style.transition = "transform 0.15s ease, box-shadow 0.2s ease, filter 0.3s ease";
+    // Slight brightness shift
+    ball.style.filter = `brightness(${1 + avg / 500})`;
 
-    let reflection = el.querySelector('.reflection');
-    if (!reflection) {
-      reflection = document.createElement('div');
-      reflection.classList.add('reflection');
-      el.appendChild(reflection);
-    }
-
-    reflection.style.opacity = Math.min(1, 0.25 + avg / 400);
-    reflection.style.filter = `hue-rotate(${hueShift}deg) brightness(${1 + avg / 350})`;
-    reflection.style.transform = `translateX(-50%) scaleY(-1) scaleX(${1 + avg / 800})`;
+    // Gentle reflection widening
+    reflection.style.opacity = Math.min(0.5, 0.2 + avg / 600);
+    reflection.style.transform = `translateX(-50%) scaleY(-1) scaleX(${1 + avg / 900})`;
   });
 }
+
 
 // 🎵 MUSIC PLAYER + ANALYSER
 const music = document.getElementById("bg-music");
@@ -173,7 +176,8 @@ window.addEventListener("DOMContentLoaded", () => {
       isPlaying = true;
       playBtn.textContent = "⏸️ Pause";
       vinyl.classList.add("playing");
-      animateEqualizer();
+      requestAnimationFrame(animateVisuals); // starts the visual/music analyser loop
+
     });
   }, { once: true });
 });
@@ -222,50 +226,51 @@ function setupAudioAnalyser() {
 
 // 🧠 Optimized Equalizer + Visual Sync
 let lastFrameTime = 0;
-function animateEqualizer(now = 0) {
-  if (!analyser || !dataArray) return;
+let avgAmplitude = 0;
 
-  // Run this loop only every ~60ms
-  if (now - lastFrameTime < 60) {
-    requestAnimationFrame(animateEqualizer);
+// 🎵 Main Music + Visual Loop
+function animateVisuals(timestamp = 0) {
+  if (!analyser || !dataArray) {
+    requestAnimationFrame(animateVisuals);
     return;
   }
-  lastFrameTime = now;
 
-  analyser.getByteFrequencyData(dataArray);
-  const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+  // Update analyser only every 120ms
+  if (timestamp - lastFrameTime > 120) {
+    lastFrameTime = timestamp;
 
-  // === Batch style changes (no layout thrash) ===
-  const player = document.getElementById("music-player");
-  const buttons = document.querySelectorAll(".control-btn");
-  const playerBeat = avg > 120;
+    analyser.getByteFrequencyData(dataArray);
+    avgAmplitude = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
 
-  // Cache height updates
-  const step = Math.floor(dataArray.length / bars.length);
-  const heights = Array.from({ length: bars.length }, (_, i) =>
-    Math.max(8, (dataArray[i * step] / 255) * 25)
-  );
+    const step = Math.floor(dataArray.length / bars.length);
+    const heights = Array.from({ length: bars.length }, (_, i) =>
+      Math.max(8, (dataArray[i * step] / 255) * 25)
+    );
 
-  // Apply in one go
-  requestAnimationFrame(() => {
     bars.forEach((bar, i) => {
       bar.style.height = `${heights[i]}px`;
       bar.style.opacity = 0.5 + heights[i] / 50;
     });
+
+    const playerBeat = avgAmplitude > 120;
+    const player = document.getElementById("music-player");
+    const buttons = document.querySelectorAll(".control-btn");
+
     player.classList.toggle("beat", playerBeat);
     buttons.forEach(btn => btn.classList.toggle("beat", playerBeat));
-    updateGlow(avg);
-    updateOrnaments(avg);
-    drawSnow(avg);
-  });
 
-  requestAnimationFrame(animateEqualizer);
+    updateGlow(avgAmplitude);
+    updateOrnaments(avgAmplitude);
+  }
+
+  requestAnimationFrame(animateVisuals);
 }
 
-// ❄️ DRAW SNOW
+// ❄️ SNOW — INDEPENDENT LOOP (ALWAYS RUNNING)
 let colorCycle = 0;
 function drawSnow(avg = 0) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   const speedFactor = 1 + avg / 200;
   const brightness = Math.min(1, 0.4 + avg / 400);
 
@@ -286,8 +291,27 @@ function drawSnow(avg = 0) {
   const glow = `0 0 15px ${textColor}, 0 0 30px ${textColor}`;
   merryText.style.color = textColor;
   merryText.style.textShadow = glow;
+
   moveSnow(speedFactor, avg);
 }
+
+function snowLoop() {
+  // Use passive amplitude if no music has played yet
+  drawSnow(avgAmplitude || 0);
+  requestAnimationFrame(snowLoop);
+}
+
+// Start the snow immediately
+requestAnimationFrame(snowLoop);
+
+// Start full animation when music begins
+window.addEventListener("click", () => {
+  if (!audioContext) {
+    setupAudioAnalyser();
+    requestAnimationFrame(animateVisuals);
+  }
+}, { once: true });
+
 
 // 🎆 Sparkle Finale
 function showSparkleFinale() {
